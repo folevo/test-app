@@ -56,3 +56,61 @@ npm test
 ```
 
 It runs Node.js’s built-in test runner (`node --test`). No test files are currently present in the repository.
+
+## Usage examples
+
+Start the quiz:
+
+```bash
+npm start
+```
+
+A typical interactive session follows this pattern:
+
+```text
+Choose a category:
+
+  1. JavaScript Basics
+  2. Node.js Fundamentals
+  3. General Programming
+
+Your choice (enter number): 1
+
+How many questions?
+
+  1. All questions
+  2. 3 questions
+  3. 5 questions
+
+Your choice (enter number): 2
+```
+
+For each question, enter the displayed number for the desired answer. Invalid selections are rejected until a valid option is supplied. At the end of the session, answer `y` at the replay prompt to begin another quiz or any other response to exit.
+
+```text
+Would you like to play again? (y/n): y
+```
+
+## File structure
+
+```text
+.
+├── data/
+│   └── questions.json     # Categories, multiple-choice options, answers, and explanations
+├── src/
+│   ├── colors.js          # ANSI terminal styling helpers
+│   ├── input.js           # Readline prompts, menu selection, confirmation, and pause helpers
+│   └── quiz.js            # Quiz state, question flow, scoring, progress, and results
+├── index.js               # Executable application entry point and main interaction loop
+├── package.json           # Project metadata, Node.js requirement, and npm scripts
+└── README.md              # Project documentation
+```
+
+## Other details
+
+- The project is configured as an ES module package through `"type": "module"` in `package.json`; use `import`/`export` syntax for project modules.
+- `index.js` derives its directory from `import.meta.url`, allowing it to locate `data/questions.json` without relying on the shell’s current working directory.
+- The application reads its question bank asynchronously at startup. If the JSON file cannot be read or parsed, it reports the error and exits with status code `1`.
+- A question object contains `question`, `options`, `answer`, and optional `explanation` fields. The `answer` value is a zero-based index into `options`.
+- Terminal coloring uses ANSI escape codes implemented locally in `src/colors.js`; no color library is installed.
+- Quiz results are maintained only in memory for the current session. The application does not persist scores or user answers.
